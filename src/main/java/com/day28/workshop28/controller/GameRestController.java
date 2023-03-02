@@ -16,15 +16,15 @@ import com.day28.workshop28.service.ReviewService;
 @RequestMapping
 public class GameRestController {
     
+    @Autowired
+    private ReviewService reviewSvc;
+    
     private static final String MESSAGE_BAD_REQUEST = """
             {
                 "error type": "BAD REQUEST"
-                "error message": "Invalid ID",
+                "error message": "Invalid Input",
             }
-            """;
-
-    @Autowired
-    private ReviewService reviewSvc;
+        """;
 
     @GetMapping(path="/game/{gameId}/reviews")
     public ResponseEntity<String> getReviews(@PathVariable Integer gameId) {
@@ -44,8 +44,16 @@ public class GameRestController {
 
     @GetMapping(path="/games/{rating}")
     public ResponseEntity<String> getGameByRating(@PathVariable String rating) {
-        String result = reviewSvc.getReviewsByRating(rating);
+        if (!(rating.equalsIgnoreCase("highest") || rating.equalsIgnoreCase("lowest")))
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(MESSAGE_BAD_REQUEST); 
 
-        return null;
+        String result = reviewSvc.getReviewsByRating(rating);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result);
     }
 }
