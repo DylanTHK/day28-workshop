@@ -1,7 +1,5 @@
 package com.day28.workshop28.repository;
 
-import java.util.List;
-
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -87,7 +85,6 @@ public class ReviewRepo {
         AggregationResults<Document> results = mongoTemplate.aggregate(pipeline, COLLECTION_COMMENT, Document.class);
         
         // getUniqueMappedResults OR doc.get(0) works
-        List<Document> doc = results.getMappedResults();
         Document firstDoc = results.getUniqueMappedResult();
         // System.out.println("\nReviewRepo >>> Extracted Document: " + doc);
         System.out.println("\nReviewRepo >>> Extracted Document(First): " + firstDoc);

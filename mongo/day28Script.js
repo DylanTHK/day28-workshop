@@ -1,7 +1,9 @@
 use bgg;
 
 //db.game.find();
-//db.comment.find();
+db.game.aggregate([
+    {$match: {gid:2}}
+]);
 
 // a1) Projection for DragonMaster game
 //db.game.aggregate([
@@ -117,6 +119,7 @@ db.comment.aggregate([
     ,
     {
         // group by game id and select first element (highest/lowest)
+        // group by id, remaining sorted data stored in arrays        
         $group: {
             _id: "$gid",
             review_id: {$first: "$c_id"},
@@ -125,38 +128,38 @@ db.comment.aggregate([
             comment: {$first: "$c_text"}
         }
     }
-    ,
-    {
-        // join game document for each comment from game collection
-        $lookup: {
-            from: "game",
-            foreignField: "gid",
-            localField: "_id",
-            as: "game"
-        }
-    }
-    ,
-    {
-        // unpack game for easier access
-        $unwind: "$game"
-    }
-    ,
-    {
-        // format data for presentation
-        $project: {
-            _id: "$_id",
-            name: "$game.name",
-            rating: "$rating",
-            user: "$user",
-            comment: "$comment",
-            review_id: "$review_id"
-        }
-    }
+//    ,
+//    {
+//        // join game document for each comment from game collection
+//        $lookup: {
+//            from: "game",
+//            foreignField: "gid",
+//            localField: "_id",
+//            as: "game"
+//        }
+//    }
+//    ,
+//    {
+//        // unpack game for easier access
+//        $unwind: "$game"
+//    }
+//    ,
+//    {
+//        // format data for presentation
+//        $project: {
+//            _id: "$_id",
+//            name: "$game.name",
+//            rating: "$rating",
+//            user: "$user",
+//            comment: "$comment",
+//            review_id: "$review_id"
+//        }
+//    }
 ]);
 
 // Query to validate above code
 db.comment.aggregate([
     {
-        $match: {gid: 1072}
+        $match: {gid: 14746}
     }
 ]);
